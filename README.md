@@ -48,6 +48,7 @@ Then open http://localhost:4000.
 | `_layouts/post.html` | Single post |
 | `_layouts/default.html` | Page shell, fonts, keyboard bar |
 | `assets/css/style.css` | All styles; colours are CSS variables at the top |
-| `assets/js/site.js` | Keyboard shortcuts, invert toggle, the animated ASCII field |
+| `assets/js/site.js` | Keyboard bar (shortcuts, paging, invert) and animation step counts, on every page |
+| `assets/js/field.js` | The animated ASCII field, home page only |
 
 Keyboard: `H` home, `A` about, `P` posts, `T` topics, `J`/`K` page down/up, `C` contact, `I` invert (remembered per browser).

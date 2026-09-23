@@ -54,6 +54,7 @@ ol, ul { padding: 0; list-style: none; }
 
 /* Pixel display type */
 .display {
+  width: fit-content;
   font: 700 clamp(2.5rem, 5.4vw, 4.5rem)/1 var(--pixel);
   letter-spacing: 0;
   margin-bottom: 0.7em;
@@ -280,7 +281,8 @@ kbd {
 /* Motion ------------------------------------------------------------
    Everything moves in discrete steps, one character or one scanline at
    a time, like a matrix display refreshing. Nothing eases or fades.
-   `.motion` is set in <head> only when reduced motion is off. */
+   `.motion` is set in <head> only when reduced motion is off, and site.js
+   supplies the per-element step counts (--n, --d, --dur). */
 
 @keyframes scan-x { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
 @keyframes scan-y { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
@@ -288,7 +290,6 @@ kbd {
 @keyframes flicker { to { background-position: 3px 0; } }
 
 .type { display: block; width: fit-content; }
-.hero__note--3 .type { margin-left: auto; }
 .type--caret::after {
   content: "";
   display: inline-block;
@@ -299,23 +300,25 @@ kbd {
   background: var(--fg);
 }
 
+/* Boot: the title scans in letter by letter while the field fills row by
+   row, then the hero notes type out. --boot is when the title lands. */
+:root { --boot: 0.9s; }
 .motion .masthead__title { animation: scan-x 0.84s steps(14, end) both; }
+.motion .hero__field { animation: scan-y 0.72s steps(36, end) 0.12s both; }
 
-/* Hero notes type out one character per step once the title has landed. */
-.motion .type { clip-path: inset(0 100% 0 0); }
-.motion-ready .type {
-  animation: scan-x calc(var(--n) * var(--char)) steps(var(--n), end) calc(0.9s + var(--d)) both;
+/* Until site.js sets --n the animation is invalid, so the line stays
+   clipped and typing starts the moment its step count arrives. */
+.motion .type {
+  clip-path: inset(0 100% 0 0);
+  animation: scan-x var(--dur) steps(var(--n), end) calc(var(--boot) + var(--d)) both;
 }
-.motion-ready .type--caret::after { animation: blink 1.06s steps(1, end) calc(0.9s + var(--d) + var(--n) * var(--char)) infinite; }
+.motion .type--caret::after {
+  animation: blink 1.06s steps(1, end) calc(var(--boot) + var(--d) + var(--dur)) infinite;
+}
 
-/* Jumping to a section (P, T, A, C or a link) re-scans its heading, so
-   you can see where you landed. Headings are never hidden otherwise. */
-.motion .display { width: fit-content; }
-.motion .display.is-landed { animation: scan-x calc(var(--n) * 45ms) steps(var(--n), end) both; }
-
-/* Hover: the dither blocks either side of a post title shimmer. */
-/* 0.7s per cycle keeps it under three changes a second. */
-.post-row a:hover .dither { animation: flicker 0.7s steps(2, jump-none) infinite; }
+/* Jumping to a section (A, P, T, C or any #link) scans its heading in,
+   so you can see where you landed. The delay lets the scroll arrive. */
+.motion :target .display { animation: scan-x calc(var(--n) * 45ms) steps(var(--n), end) 0.3s both; }
 
 /* A key pressed on the keyboard lights its keycap. */
 .keys .is-pressed kbd { background: var(--accent); }
@@ -324,11 +327,8 @@ kbd {
 ::view-transition-old(root) { animation: none; }
 ::view-transition-new(root) { animation: scan-y 0.42s steps(12, end) both; }
 
-
-/* The ASCII field boots one row per step, alongside the title. */
-.motion .hero__field { animation: scan-y 0.72s steps(36, end) 0.12s both; }
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .post-row a:hover .dither { animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Post dither blocks shimmer on hover; 0.7s a cycle stays under
+     three changes a second. */
+  .post-row a:hover .dither { animation: flicker 0.7s steps(2, jump-none) infinite; }
 }
