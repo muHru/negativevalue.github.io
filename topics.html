@@ -1,0 +1,20 @@
+---
+layout: default
+title: Topics
+permalink: /topics/
+---
+<main id="main" class="article-wrap">
+  <p class="article__meta"><a href="{{ '/' | relative_url }}">[/&lt; HOME</a></p>
+  <h1 class="display">TOPICS</h1>
+  {% assign tags = site.tags | sort %}
+  {% for tag in tags %}
+  <section class="topic" id="{{ tag[0] | slugify }}">
+    <h2>_ {{ tag[0] | upcase }}</h2>
+    <ol>
+      {% for post in tag[1] %}
+      <li><a href="{{ post.url | relative_url }}"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time> {{ post.title | upcase }}</a></li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+</main>

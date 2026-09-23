@@ -1,0 +1,20 @@
+title: Negative Value
+tagline: Communization and the value-form
+description: Communization theory and the critique of the value-form, after Heinrich. With occasional interference from Lovecraft, Land and the CCRU.
+# Shown in the footer only if set.
+email:
+github: muHru
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  footnote_backlink: "↩"
+
+permalink: /posts/:year/:month/:day/:title/
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+exclude:
+  - README.md

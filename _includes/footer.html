@@ -1,0 +1,10 @@
+<footer class="contact" id="contact">
+  <h2 class="display">CONTACT</h2>
+  <div class="contact__row">
+    <span>{{ site.title | upcase }}<br>&copy; {{ site.time | date: "%Y" }}</span>
+    {% if site.email %}<a href="mailto:{{ site.email }}">{{ site.email | upcase }}</a>{% endif %}
+    <a href="{{ '/feed.xml' | relative_url }}">RSS FEED &rarr;</a>
+    {% if site.github %}<a href="https://github.com/{{ site.github }}">GITHUB/{{ site.github | upcase }} &rarr;</a>{% endif %}
+    <span class="dim">NOTHING HUMAN MAKES IT OUT OF THE NEAR FUTURE</span>
+  </div>
+</footer>

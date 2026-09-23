@@ -1,14 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>negativevalue</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>negativevalue</h1>
-  <p>Site is up.</p>
-  <script src="script.js"></script>
-</body>
-</html>
+---
+layout: default
+---
+<header class="masthead" id="top">
+  <h1 class="masthead__title">NEGATIVE&nbsp;VALUE</h1>
+  <div class="hero">
+    <figure class="hero__field" aria-hidden="true">
+      <pre id="field"></pre>
+    </figure>
+    <p class="hero__note hero__note--1">/ COMMUNIZATION THEORY<br>&amp; THE CRITIQUE OF THE VALUE-FORM</p>
+    <p class="hero__note hero__note--2">/ AFTER MICHAEL HEINRICH<br>M &mdash; C &mdash; M&prime;</p>
+    <p class="hero__note hero__note--3">/ USE YOUR KEYBOARD TO NAVIGATE &darr;</p>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section" id="about">
+    <h2 class="display">ABOUT</h2>
+    <div class="spread">
+      <p><span>A BLOG ON COMMUNIZATION</span><span>AND THE FORM OF VALUE</span></p>
+      <p><span>FORM OVER SUBSTANCE</span><span>CRITIQUE OVER ECONOMICS</span><span>ABOLITION OVER TRANSITION</span></p>
+      <p><span>READING MARX AFTER HEINRICH</span><span>WITH INTERFERENCE FROM THE CCRU</span><span>NICK LAND AND H.P. LOVECRAFT</span></p>
+    </div>
+  </section>
+
+  <section class="section" id="posts">
+    <h2 class="display">POSTS</h2>
+    {% if site.posts.size > 0 %}
+    <ol class="posts">
+      {% for post in site.posts %}
+      <li class="post-row">
+        <a href="{{ post.url | relative_url }}">
+          <span class="post-row__meta">[/&gt; {{ forloop.rindex | prepend: '00' | slice: -3, 3 }}</span>
+          <time class="post-row__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+          <span class="post-row__title"><i class="dither"></i>{{ post.title | upcase }}<i class="dither"></i></span>
+          <span class="post-row__more">READ MORE <b class="sq"></b> &crarr;{% if post.tags.size > 0 %}<span class="dim"> &nbsp;/ {{ post.tags | join: ' / ' | upcase }}</span>{% endif %}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="dim">[/&gt; NO TRANSMISSIONS YET</p>
+    {% endif %}
+  </section>
+
+  <section class="section" id="topics">
+    <h2 class="display">TOPICS</h2>
+    <p class="dim">[/&gt; :]</p>
+    <ul class="topics">
+      {% assign tags = site.tags | sort %}
+      {% for tag in tags %}
+      <li style="--i: {{ forloop.index0 }}"><a href="{{ '/topics/' | relative_url }}#{{ tag[0] | slugify }}">_ {{ tag[0] | upcase }} <span class="dim">({{ tag[1].size }})</span> &crarr;</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+</main>
