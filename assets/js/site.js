@@ -6,11 +6,16 @@
 
   /* Keyboard navigation --------------------------------------------- */
 
-  function toggleInvert() {
+  function applyInvert() {
     var on = !root.hasAttribute('data-invert');
     if (on) root.setAttribute('data-invert', '');
     else root.removeAttribute('data-invert');
     try { localStorage.setItem('nv-invert', on ? '1' : '0'); } catch (e) {}
+  }
+
+  function toggleInvert() {
+    if (document.startViewTransition && !reduceMotion) document.startViewTransition(applyInvert);
+    else applyInvert();
   }
 
   document.querySelectorAll('[data-invert]').forEach(function (btn) {
@@ -31,8 +36,57 @@
     var el = document.querySelector('.keys [data-key="' + e.key.toLowerCase() + '"]');
     if (!el) return;
     e.preventDefault();
+    el.classList.add('is-pressed');
+    setTimeout(function () { el.classList.remove('is-pressed'); }, 160);
     el.click();
   });
+
+  /* Stepped reveals: each animation gets one step per character -------- */
+
+  if (root.classList.contains('motion')) {
+    root.classList.add('motion-ready');
+    var CHAR_MS = 16, LINE_PAUSE_MS = 80;
+    var delay = 0;
+    root.style.setProperty('--char', CHAR_MS + 'ms');
+    document.querySelectorAll('.type').forEach(function (line) {
+      var n = line.textContent.length;
+      line.style.setProperty('--n', n);
+      line.style.setProperty('--d', delay + 'ms');
+      delay += n * CHAR_MS + LINE_PAUSE_MS;
+    });
+
+    document.querySelectorAll('.display').forEach(function (h) {
+      h.style.setProperty('--n', Math.min(h.textContent.trim().length, 24));
+    });
+
+    var land = function (heading) {
+      heading.classList.remove('is-landed');
+      void heading.offsetWidth; // restart the animation
+      heading.classList.add('is-landed');
+    };
+
+    var landOn = function (section) {
+      var heading = section && section.querySelector('.display');
+      if (!heading) return;
+      // If a smooth scroll is on its way, scan once it arrives rather than off screen.
+      var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      var settled = atBottom || Math.abs(section.getBoundingClientRect().top) < 24;
+      if (!settled && 'onscrollend' in window) {
+        window.addEventListener('scrollend', function () { land(heading); }, { once: true });
+      } else {
+        land(heading);
+      }
+    };
+
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest && e.target.closest('a[href*="#"]');
+      if (!link || link.pathname !== location.pathname || !link.hash) return;
+      var section = document.getElementById(link.hash.slice(1));
+      if (section) requestAnimationFrame(function () { landOn(section); });
+    });
+
+    if (location.hash) landOn(document.getElementById(location.hash.slice(1)));
+  }
 
   /* ASCII field: M-C-M' pushed through a drifting signal ------------- */
 
