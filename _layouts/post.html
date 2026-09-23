@@ -1,0 +1,26 @@
+---
+layout: default
+---
+<main id="main" class="article-wrap">
+  <article class="article">
+    <header class="article__head">
+      <p class="article__meta">
+        <a href="{{ '/#posts' | relative_url }}">[/&lt; ALL POSTS</a>
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time>
+      </p>
+      <h1 class="display article__title">{{ page.title | upcase }}</h1>
+      {% if page.tags.size > 0 %}
+      <p class="article__tags">
+        {% for tag in page.tags %}<a href="{{ '/topics/' | relative_url }}#{{ tag | slugify }}">_ {{ tag | upcase }}</a>{% endfor %}
+      </p>
+      {% endif %}
+    </header>
+    <div class="prose">
+      {{ content }}
+    </div>
+    <nav class="article__nav" aria-label="Adjacent posts">
+      {% if page.previous %}<a href="{{ page.previous.url | relative_url }}">&larr; {{ page.previous.title | upcase }}</a>{% else %}<span></span>{% endif %}
+      {% if page.next %}<a href="{{ page.next.url | relative_url }}">{{ page.next.title | upcase }} &rarr;</a>{% endif %}
+    </nav>
+  </article>
+</main>
